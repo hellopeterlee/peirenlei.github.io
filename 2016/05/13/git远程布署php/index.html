@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>git远程布署php | PeterLee的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="#git远程布署php
+###以下操作都是在布署服务器上进行
+
+首先先确定php-fpm，nginx是以哪个用户运行的，这里以www用户为例
+ 1ps aux | grep php-fpm
+
+确定www的home目录(这里以/home/www为例)：
+ 1234cat /etc/passwd | grep wwwsudo mkdir /home/www/.sshsudo chown -R apac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git远程布署php">
+<meta property="og:url" content="http://blog.peterlee.cn/2016/05/13/git远程布署php/index.html">
+<meta property="og:site_name" content="PeterLee的技术博客">
+<meta property="og:description" content="#git远程布署php
+###以下操作都是在布署服务器上进行
+
+首先先确定php-fpm，nginx是以哪个用户运行的，这里以www用户为例
+ 1ps aux | grep php-fpm
+
+确定www的home目录(这里以/home/www为例)：
+ 1234cat /etc/passwd | grep wwwsudo mkdir /home/www/.sshsudo chown -R apac">
+<meta property="og:updated_time" content="2016-05-13T02:43:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git远程布署php">
+<meta name="twitter:description" content="#git远程布署php
+###以下操作都是在布署服务器上进行
+
+首先先确定php-fpm，nginx是以哪个用户运行的，这里以www用户为例
+ 1ps aux | grep php-fpm
+
+确定www的home目录(这里以/home/www为例)：
+ 1234cat /etc/passwd | grep wwwsudo mkdir /home/www/.sshsudo chown -R apac">
+  
+    <link rel="alternate" href="/atom.xml" title="PeterLee的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">PeterLee的技术博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://blog.peterlee.cn"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-git远程布署php" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/05/13/git远程布署php/" class="article-date">
+  <time datetime="2016-05-13T02:37:51.000Z" itemprop="datePublished">2016-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      git远程布署php
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#git远程布署php</p>
+<p>###以下操作都是在布署服务器上进行</p>
+<ol>
+<li><p>首先先确定php-fpm，nginx是以哪个用户运行的，这里以www用户为例</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux | grep php-fpm</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>确定www的home目录(这里以/home/www为例)：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd | grep www</span><br><span class="line"></span><br><span class="line">sudo mkdir /home/www/.ssh</span><br><span class="line">sudo chown -R apache:apache /home/www/.ssh/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成两个公钥 1. git用户公钥，2. 部署公钥</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//1. git用户公钥</span><br><span class="line">ssh-keygen -t rsa -C &quot;peirenlei@163.com&quot;</span><br><span class="line"># 然后一直回车就行</span><br><span class="line"># 生成的文件通常是 /root/.ssh/id_rsa，如果非root用户请查看提示上的路径</span><br><span class="line"></span><br><span class="line">//2. 部署公钥</span><br><span class="line">sudo -Hu www ssh-keygen -t rsa # 请选择 &quot;no passphrase&quot;，一直回车下去</span><br><span class="line">sudo cat /home/www/.ssh/id_rsa.pub # 查看生成的密钥内容，复制全部</span><br></pre></td></tr></table></figure>
+<p>将这两个公钥分别填入coding的相应位置</p>
+</li>
+</ol>
+<ol>
+<li><p>修改nginx配置</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root /data/wwwroot/test.ekatong.com/public;</span><br><span class="line"></span><br><span class="line">location / &#123;</span><br><span class="line">   	 try_files $uri $uri/ /index.php?$query_string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将www用户添加进sudoers</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/sudoers</span><br><span class="line">//root下面添加一行：</span><br><span class="line">www             ALL=(ALL)       NOPASSWD:ALL</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改 /data/wwwroot/test.ekatong.com 目录为www用户所有：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R www:www /data/wwwroot/test.ekatong.com</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li>将本地代码提交到coding上去</li>
+<li><p>在服务器上执行git pull，将代码pull下来，注意这里要以www身份pull</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -Hu www git clone git@git.coding.net:peirenlei/www.ekatong.com.git /data/wwwroot/test.ekatong.com  --depth=1</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li><p>webhook文件</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class DeploymentController extends Controller</span><br><span class="line">&#123;</span><br><span class="line">	public function deploy()&#123;            </span><br><span class="line">        $target = &apos;/data/wwwroot/test.ekatong.com&apos;;</span><br><span class="line">		return	shell_exec(&quot;cd $target &amp;&amp; /usr/bin/git pull&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li>coding中设置好webhook地址，本地修改代码后git push后，服务器上收到webhook请求，即可执行git pull拉取最新代码，从而达到自动更新代码的目的.    </li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.peterlee.cn/2016/05/13/git远程布署php/" data-id="cio54kdwh0000mhssgg63btdl" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/05/13/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/05/13/git远程布署php/">git远程布署php</a>
+          </li>
+        
+          <li>
+            <a href="/2016/05/13/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 PeterLee<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

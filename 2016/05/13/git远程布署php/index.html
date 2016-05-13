@@ -150,11 +150,8 @@
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd | grep www</span><br><span class="line"></span><br><span class="line">sudo mkdir /home/www/.ssh</span><br><span class="line">sudo chown -R apache:apache /home/www/.ssh/</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>生成两个公钥 1. git用户公钥，2. 部署公钥</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//1. git用户公钥</span><br><span class="line">ssh-keygen -t rsa -C &quot;peirenlei@163.com&quot;</span><br><span class="line"># 然后一直回车就行</span><br><span class="line"># 生成的文件通常是 /root/.ssh/id_rsa，如果非root用户请查看提示上的路径</span><br><span class="line"></span><br><span class="line">//2. 部署公钥</span><br><span class="line">sudo -Hu www ssh-keygen -t rsa # 请选择 &quot;no passphrase&quot;，一直回车下去</span><br><span class="line">sudo cat /home/www/.ssh/id_rsa.pub # 查看生成的密钥内容，复制全部</span><br></pre></td></tr></table></figure>
-<p>将这两个公钥分别填入coding的相应位置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//1. git用户公钥</span><br><span class="line">ssh-keygen -t rsa -C &quot;peirenlei@163.com&quot;</span><br><span class="line"># 然后一直回车就行</span><br><span class="line"># 生成的文件通常是 /root/.ssh/id_rsa，如果非root用户请查看提示上的路径</span><br><span class="line"></span><br><span class="line">//2. 部署公钥</span><br><span class="line">sudo -Hu www ssh-keygen -t rsa # 请选择 &quot;no passphrase&quot;，一直回车下去</span><br><span class="line">sudo cat /home/www/.ssh/id_rsa.pub # 查看生成的密钥内容，复制全部</span><br><span class="line"></span><br><span class="line"># 将这两个公钥分别填入coding的相应位置</span><br></pre></td></tr></table></figure>
 </li>
-</ol>
-<ol>
 <li><p>修改nginx配置</p>
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root /data/wwwroot/test.ekatong.com/public;</span><br><span class="line"></span><br><span class="line">location / &#123;</span><br><span class="line">   	 try_files $uri $uri/ /index.php?$query_string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
@@ -164,20 +161,16 @@
 <li><p>修改 /data/wwwroot/test.ekatong.com 目录为www用户所有：</p>
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R www:www /data/wwwroot/test.ekatong.com</span><br></pre></td></tr></table></figure>
 </li>
-</ol>
-<ol>
-<li>将本地代码提交到coding上去</li>
+<li><p>将本地代码提交到coding上去</p>
+</li>
 <li><p>在服务器上执行git pull，将代码pull下来，注意这里要以www身份pull</p>
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -Hu www git clone git@git.coding.net:peirenlei/www.ekatong.com.git /data/wwwroot/test.ekatong.com  --depth=1</span><br></pre></td></tr></table></figure>
 </li>
-</ol>
-<ol>
 <li><p>webhook文件</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class DeploymentController extends Controller</span><br><span class="line">&#123;</span><br><span class="line">	public function deploy()&#123;            </span><br><span class="line">        $target = &apos;/data/wwwroot/test.ekatong.com&apos;;</span><br><span class="line">		return	shell_exec(&quot;cd $target &amp;&amp; /usr/bin/git pull&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+ <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeploymentController</span> <span class="keyword">extends</span> <span class="title">Controller</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">deploy</span><span class="params">()</span> </span>&#123;        </span><br><span class="line">    $target = <span class="string">'/data/wwwroot/test.ekatong.com'</span>;</span><br><span class="line">		<span class="keyword">return</span>	shell_exec(<span class="string">"cd $target &amp;&amp; /usr/bin/git pull"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-</ol>
-<ol>
-<li>coding中设置好webhook地址，本地修改代码后git push后，服务器上收到webhook请求，即可执行git pull拉取最新代码，从而达到自动更新代码的目的.    </li>
+<li><p>coding中设置好webhook地址，本地修改代码后git push后，服务器上收到webhook请求，即可执行git pull拉取最新代码，从而达到自动更新代码的目的.    </p>
+</li>
 </ol>
 
             </div>
